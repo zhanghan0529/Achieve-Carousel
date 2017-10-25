@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .container{
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        .wrap{
+            width: 320px;
+            height: 170px;
+            overflow: hidden;
+            position: relative;
+        }
+        .show>li{
+            position: absolute;      
+        }
+
+
+        .show img{
+            width: 320px;
+            height: 170px;
+            display: none;     
+        }
+        .clearfix:after{
+            display: block;
+            content: "";
+            clear: both;
+        }
+        .btn{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(156, 151, 151,0.2);
+            border-radius: 50%;
+            line-height: 30px;
+            text-align: center;
+            background: rgba(156, 151, 151,0.2);
+            color: white;
+            top: 50%;
+            margin-top: -15px;
+            cursor: pointer;
+        }
+        .btn:hover{
+            opacity: 0.7;
+        }
+        .prev{
+            left: 10px;
+        }
+        .next{
+            right: 10px;
+        }
+        .btn1{
+            position: absolute;
+            width: 100%;
+            bottom: 10px;
+            text-align: center;
+            line-height: 0;
+        }
+        .btn1>li{
+            display: inline-block;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            width: 20px;
+            height: 5px;
+            background: white;
+        }
+        .btn1>li.active{
+            background: rgba(156, 151, 151,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="wrap">
+            <ul class="show clearfix">
+                <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/26.jpg" alt=""></a></li>
+                <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/25.jpg" alt=""></a></li>
+                <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/24.jpg" alt=""></a></li>
+                <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/23.jpg" alt=""></a></li>
+            </ul>
+            <div class="btn prev"><</div>
+            <div class="btn next">></div>
+            <ul class="btn1">
+                <li class="active"></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var $imgsWrap = $(".wrap>.show img");
+        var $imgs = $(".show li")
+        var $btnPrev = $(".prev");
+        var $btnNext = $(".next");
+        var $btn = $(".btn1>li");
+        var len = $imgs.length;
+        var index = 0;
+        var isShow = false;//模拟的动态锁，防止过快点击加载更多动画
+        var clock;
+        $imgsWrap.first().fadeIn(750);
+        if(clock){
+                clearInterval(clock);//如果clock不存在，则执行下一个函数，如果clock存在，则取消上次设置的clock
+            }
+        clock = setInterval(function(){
+                showNext(1);
+            }, 2000);
+        $btnNext.on("click",function(){
+            showNext(1);
+        })
+        $btnPrev.on("click",function(){
+            showPrev(1);
+        })
+
+        $btn.on("click",function(){
+            var index1 = $(this).index();
+            if(index1 > index){
+                showNext(index1 - index);
+            }else if(index1 < index){
+                showPrev(index - index1);
+            }
+        })
+        function showNext(e){
+            if(isShow){
+                return;
+            }
+            isShow = true;
+            $imgsWrap.eq(index).fadeOut(500);
+                index += e ;
+                if(index > len-1 ){
+                    $imgsWrap.first().fadeIn(500); 
+                    index = 0;
+                }
+                $imgsWrap.eq(index).fadeIn(500);
+                showBtn();
+                isShow = false
+             
+        }
+        function showPrev(e){
+            if(isShow){
+                return;
+            }
+            isShow = true;
+            $imgsWrap.eq(index).fadeOut(500)
+                index -= e;
+                if(index<0){
+                    $imgsWrap.last().fadeIn(500); 
+                    index = len - 1;
+                }
+                $imgsWrap.eq(index).fadeIn(500);
+                showBtn();
+                isShow = false;
+        }
+         function showBtn(){
+            $btn.removeClass("active").eq(index).addClass("active");
+        }
+
+
+       
+
+    </script>
+</body>
+</html>
